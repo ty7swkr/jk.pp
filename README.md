@@ -27,7 +27,7 @@
 - thirdparty: rapidjson 라이브러리
 
 ### 개발 환경
-- c++11
+- C++11 (고객 요구사항)
 - Rocky Linux 9.4 (Blue Onyx)
   - g++ version 11.5.0 20240719 (Red Hat 11.5.0-2)
   - boost-1.75.0-8
