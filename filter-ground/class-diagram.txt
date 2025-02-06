@@ -1,0 +1,73 @@
+classDiagram
+    class NatsRecvers {
+        -clients_ : deque<pair<WorkerPool>>
+        +setClientNum(num)
+        +setWorkerNum(num)
+        +start()
+        +stop()
+    }
+
+    class LockFreeQueueThread {
+        <<MThread>>
+        #waiter_ : BlockingLockFreeQueue
+        +start()
+        +stop()
+        #run()
+    }
+
+    class BlockingLockFreeQueue {
+        -queue_
+        -signal_ : MSignal
+        +push(item)
+        +pop(item)
+    }
+
+    class Worker {
+        +push(message)
+        #run()
+    }
+
+    class WorkerPool {
+        -workers_ : deque<Worker>
+        +setNumOfWorkers(num)
+        +push(message)
+        +start()
+        +stop()
+    }
+
+    class FilterWorker {
+        +push(message)
+        #run()
+        #parseMessage(message)
+        #handleDiscard()
+    }
+
+    class NatsPublisher {
+        -subject_
+        -url_
+        +publish(message)
+        +setServerUrl(url)
+        +setSubject(subject)
+    }
+
+    class NatsPublisherPool {
+        -publishers_ : deque<NatsPublisher>
+        +publish(message)
+        +setPublisherNum(num)
+        +start()
+        +stop()
+    }
+
+    class NatsSender
+    class NatsResult
+
+    NatsRecvers "1" *-- "1" WorkerPool : contains
+    LockFreeQueueThread "1" *-- "1" BlockingLockFreeQueue : contains
+    WorkerPool "1" *-- "*" Worker : contains
+    NatsPublisherPool "1" *-- "*" NatsPublisher : contains
+    
+    LockFreeQueueThread <|-- Worker : inherit
+    Worker <|-- FilterWorker : inherit
+    NatsPublisherPool <|-- NatsSender : inherit
+    NatsPublisherPool <|-- NatsResult : inherit
+    LockFreeQueueThread <|-- NatsPublisher : inherit

@@ -1,0 +1,29 @@
+sequenceDiagram
+    participant Client as <thread><br>NATS Client
+    participant NR as NatsRecvers
+    participant WP as WorkerPool
+    participant FW as <thread><br>FilterWorker
+    participant NS as NatsSender
+    participant NR2 as NatsResult
+    participant NP as <thread><br>NatsPublisher
+
+    %% Message Flow
+    Client->>+NR: message received
+    NR->>WP: push(message)
+    WP->>FW: push(message)
+    
+    %% Worker Processing
+    activate FW
+    Note over FW: parse_message()
+    Note over FW: handle_discard()
+    Note over FW: process message
+    
+    %% Result Publishing
+    FW->>NS: publish message
+    NS->>NP: publish(message)
+    FW->>NR2: publish result
+    NR2->>NP: publish(message)
+    NP-->>Client: send to NATS
+    deactivate FW
+
+    Note over Client,NP: Message Processing Complete
