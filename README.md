@@ -1,3 +1,5 @@
+중요한 업무관련 코드는 제외되어 있으므로 컴파일 되지 않습니다.
+
 # filter-ground
 
 - [Worker vs FilterWorker](#worker-vs-filterworker)
